@@ -2,6 +2,8 @@ import { deleteNote } from "@/app/notes/actions";
 import { db } from "@/db";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function Notes() {
   const notes = await db.query.notes.findMany();
 

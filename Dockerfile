@@ -6,6 +6,8 @@ FROM node:${NODE_VERSION}-slim as base
 
 LABEL fly_launch_runtime="Next.js"
 
+RUN apt-get update && apt-get install -y sqlite3
+
 # Next.js app lives here
 WORKDIR /app
 
@@ -37,10 +39,16 @@ RUN npm prune --omit=dev
 # Final stage for app image
 FROM base
 
+ENV DB_URL=/data/sqlite.db
+
+# add shortcut for connecting to database CLI
+RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DB_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
+
 # Copy built application
 COPY --from=build /app/.next/standalone /app
 COPY --from=build /app/.next/static /app/.next/static
 COPY --from=build /app/public /app/public
+COPY --from=build /app/drizzle /app/drizzle
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
