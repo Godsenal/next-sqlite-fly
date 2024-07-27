@@ -15,6 +15,13 @@
       "when": 1722065169105,
       "tag": "0001_noisy_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1722070644054,
+      "tag": "0002_parallel_viper",
+      "breakpoints": true
     }
   ]
 }

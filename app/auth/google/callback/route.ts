@@ -12,6 +12,7 @@ export async function GET(request: Request): Promise<Response> {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const storedState = cookies().get("google_oauth_state")?.value ?? null;
+  const redirectUri = cookies().get("google_oauth_redirect_uri")?.value ?? "/";
   const storedCodeVerifier =
     cookies().get("google_oauth_code_verifier")?.value ?? null;
   if (
@@ -64,20 +65,18 @@ export async function GET(request: Request): Promise<Response> {
         sessionCookie.attributes
       );
     } else {
-      const newUser = await db.insert(userTable).values({
-        id: generateId(9),
+      const id = generateId(9);
+      await db.insert(userTable).values({
+        id,
         googleId: googleUser.email,
         username: googleUser.name,
         profileImage: googleUser.picture,
       });
 
-      const session = await lucia.createSession(
-        String(newUser.lastInsertRowid),
-        {
-          created_at: new Date(),
-          updated_at: new Date(),
-        }
-      );
+      const session = await lucia.createSession(id, {
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
       const sessionCookie = lucia.createSessionCookie(session.id);
       cookies().set(
         sessionCookie.name,
@@ -89,7 +88,7 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: "/",
+        Location: redirectUri,
       },
     });
   } catch (error) {

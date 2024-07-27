@@ -14,6 +14,7 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes(databaseUserAttributes) {
     return {
       id: databaseUserAttributes.id,
+      username: databaseUserAttributes.username,
       googleId: databaseUserAttributes.googleId,
       profileImage: databaseUserAttributes.profileImage,
     };

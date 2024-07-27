@@ -4,10 +4,13 @@ export const noteTable = sqliteTable("notes", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   description: text("description").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
 });
 
 export const userTable = sqliteTable("user", {
-  id: text("id").primaryKey(),
+  id: text("id").notNull().primaryKey(),
   username: text("username").notNull(),
   profileImage: text("profile_image"),
   googleId: text("google_id"),
