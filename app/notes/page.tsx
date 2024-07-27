@@ -5,7 +5,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Notes() {
-  const notes = await db.query.notes.findMany();
+  const notes = await db.query.noteTable.findMany();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
